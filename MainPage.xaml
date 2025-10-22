@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="AviaCalc.MainPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Калькулятор авиатоплива">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="10" BackgroundColor="LightGray">
+
+            <!-- Заголовок -->
+            <Label Text="Калькулятор авиатоплива" 
+                   FontSize="20" 
+                   HorizontalOptions="Center" 
+                   FontAttributes="Bold"
+                   Margin="0,0,0,10"/>
+
+            <!-- Ввод данных -->
+            <Frame BorderColor="Gray" BackgroundColor="White" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Ввод данных" FontSize="16" FontAttributes="Bold"/>
+
+                    <!-- Время земли и воздуха -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Время земли:" FontAttributes="Bold"/>
+                            <Entry x:Name="GroundTimeEntry" Placeholder="ч-м или ч:м" WidthRequest="120"/>
+                            <Label Text="(ч-м или ч:м)" FontSize="10" TextColor="Gray"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="5" Grid.Column="1">
+                            <Label Text="Время воздуха:" FontAttributes="Bold"/>
+                            <Entry x:Name="AirTimeEntry" Placeholder="ч-м или ч:м" WidthRequest="120"/>
+                            <Label Text="(ч-м или ч:м)" FontSize="10" TextColor="Gray"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Концевые баки -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Заправлял концевые баки?" FontAttributes="Bold"/>
+                        <HorizontalStackLayout Spacing="20">
+                            <RadioButton x:Name="AuxNoRadio" Content="Нет" IsChecked="True"/>
+                            <RadioButton x:Name="AuxYesRadio" Content="Да"/>
+                        </HorizontalStackLayout>
+
+                        <!-- Поля для концевых баков -->
+                        <VerticalStackLayout x:Name="AuxInputLayout" IsVisible="False" Spacing="5">
+                            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="5">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Количество (л)" FontSize="12"/>
+                                    <Entry x:Name="AuxQtyEntry" Placeholder="0"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Spacing="2" Grid.Column="1">
+                                    <Label Text="Плотность" FontSize="12"/>
+                                    <Entry x:Name="AuxDensityEntry" Placeholder="0.800"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Spacing="2" Grid.Column="2">
+                                    <Label Text="№ док-та" FontSize="12"/>
+                                    <Entry x:Name="AuxDocEntry" Placeholder="123"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Основные баки -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Основные баки - Количество (л):" FontAttributes="Bold"/>
+                        <Grid ColumnDefinitions="*, *, *" ColumnSpacing="5">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Количество (л)" FontSize="12"/>
+                                <Entry x:Name="MainQtyEntry" Placeholder="1000"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2" Grid.Column="1">
+                                <Label Text="Плотность" FontSize="12"/>
+                                <Entry x:Name="MainDensityEntry" Placeholder="0.800"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2" Grid.Column="2">
+                                <Label Text="№ док-та" FontSize="12"/>
+                                <Entry x:Name="MainDocEntry" Placeholder="456"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Кнопки -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10" Margin="0,10,0,0">
+                        <Button x:Name="CalculateBtn" Text="Рассчитать" 
+                               BackgroundColor="#007ACC" 
+                               TextColor="White" 
+                               FontAttributes="Bold"
+                               HeightRequest="40"/>
+                        <Button x:Name="ClearBtn" Text="Очистить" 
+                               Grid.Column="1"
+                               BackgroundColor="#D9534F" 
+                               TextColor="White"
+                               HeightRequest="40"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ТАБЛИЦА РЕЗУЛЬТАТОВ -->
+            <Frame BorderColor="DarkBlue" BackgroundColor="White" Padding="5">
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Ведомость расхода топлива" 
+                           FontSize="16" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center"
+                           TextColor="DarkBlue"/>
+
+                    <!-- Контейнер для таблицы с горизонтальной прокруткой -->
+                    <ScrollView Orientation="Horizontal" HeightRequest="120">
+                        <Grid x:Name="ResultsGrid" 
+                              ColumnDefinitions="70,70,70,50,50,50,50,70,70,70,50,70,70,70,70,70,70,70,70"
+                              RowDefinitions="30,30"
+                              ColumnSpacing="1"
+                              RowSpacing="1"
+                              WidthRequest="1500">
+
+                            <!-- ЗАГОЛОВКИ ТАБЛИЦЫ -->
+                            <!-- Первая строка - заголовки -->
+                            <BoxView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="19" Color="LightBlue"/>
+
+                            <Label Text="Дата" Grid.Row="0" Grid.Column="0" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="№ док-та" Grid.Row="0" Grid.Column="1" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Маршрут" Grid.Row="0" Grid.Column="2" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="№ упр." Grid.Row="0" Grid.Column="3" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Земля" Grid.Row="0" Grid.Column="4" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Воздух" Grid.Row="0" Grid.Column="5" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="ВСУ" Grid.Row="0" Grid.Column="6" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Наличие перед вылетом" Grid.Row="0" Grid.Column="7" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Заправлено перед вылетом" Grid.Row="0" Grid.Column="8" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="№ док-та" Grid.Row="0" Grid.Column="9" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Слито перед вылетом" Grid.Row="0" Grid.Column="10" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="№ док-та" Grid.Row="0" Grid.Column="11" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Наличие перед запуском" Grid.Row="0" Grid.Column="12" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Израсходовано за полет" Grid.Row="0" Grid.Column="13" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Заправлено после полета" Grid.Row="0" Grid.Column="14" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="№ док-та" Grid.Row="0" Grid.Column="15" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Наличие после полета" Grid.Row="0" Grid.Column="16" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Положено израсходовать" Grid.Row="0" Grid.Column="17" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Label Text="Экономия" Grid.Row="0" Grid.Column="18" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontAttributes="Bold"/>
+
+                            <!-- Вторая строка - данные -->
+                            <BoxView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="19" Color="White"/>
+
+                            <Label x:Name="DateLabel" Text="" Grid.Row="1" Grid.Column="0" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="DocLabel" Text="" Grid.Row="1" Grid.Column="1" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="RouteLabel" Text="" Grid.Row="1" Grid.Column="2" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="ExerciseLabel" Text="" Grid.Row="1" Grid.Column="3" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="GroundLabel" Text="" Grid.Row="1" Grid.Column="4" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="AirLabel" Text="" Grid.Row="1" Grid.Column="5" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="VSULabel" Text="" Grid.Row="1" Grid.Column="6" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="BeforeFlightLabel" Text="" Grid.Row="1" Grid.Column="7" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="RefueledBeforeLabel" Text="" Grid.Row="1" Grid.Column="8" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="RefueledDocLabel" Text="" Grid.Row="1" Grid.Column="9" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="DrainedBeforeLabel" Text="" Grid.Row="1" Grid.Column="10" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="DrainedDocLabel" Text="" Grid.Row="1" Grid.Column="11" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="BeforeStartLabel" Text="" Grid.Row="1" Grid.Column="12" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="ConsumedLabel" Text="" Grid.Row="1" Grid.Column="13" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="RefueledAfterLabel" Text="" Grid.Row="1" Grid.Column="14" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="RefueledAfterDocLabel" Text="" Grid.Row="1" Grid.Column="15" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="AfterFlightLabel" Text="" Grid.Row="1" Grid.Column="16" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="PrescribedLabel" Text="" Grid.Row="1" Grid.Column="17" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                            <Label x:Name="EconomyLabel" Text="" Grid.Row="1" Grid.Column="18" FontSize="8" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </ScrollView>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
