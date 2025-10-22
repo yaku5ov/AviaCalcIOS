@@ -1,0 +1,27 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build iOS app
+      run: dotnet build AviaCalc.csproj -c Release -f net7.0-ios --verbosity normal
+      
+    - name: List files to debug
+      run: ls -la
